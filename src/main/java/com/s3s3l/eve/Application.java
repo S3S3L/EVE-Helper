@@ -89,14 +89,17 @@ public class Application {
                 if (trayIcon == null) {
                     SystemTray tray = SystemTray.getSystemTray();
                     Image image = Toolkit.getDefaultToolkit().createImage("eve_icon.jpg");
-                    trayIcon = new TrayIcon(image, "Tray Demo");
+                    trayIcon = new TrayIcon(image, "EVE Helper");
                     trayIcon.setImageAutoSize(true);
-                    trayIcon.setToolTip("System tray icon demo");
+                    trayIcon.setToolTip("EVE Helper");
                     tray.add(trayIcon);
                 }
                 if (SystemTray.isSupported()) {
-                    trayIcon.displayMessage("Hello, World", "notification demo", MessageType.INFO);
-                    trayIcon.displayMessage("Hello, World", "notification demo2", MessageType.INFO);
+                    trayIcon.displayMessage(item.getTypename(),
+                            String.format("买入价格:\t%s isk\n卖出价格:\t%s isk\n时间:\t%s\n描述:\t%s", df.format(item.getSell()),
+                                    df.format(item.getBuy()), item.getTime() == null ? "" : item.getTime(),
+                                    item.getDescription()),
+                            MessageType.INFO);
                 } else {
                     System.err.println("System tray not supported!");
                 }
