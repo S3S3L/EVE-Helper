@@ -54,7 +54,7 @@
 
     <properties>
         <main.class>com.s3s3l.eve.Application</main.class>
-    
+
         <global.encoding>UTF-8</global.encoding>
         <global.jdk.version>1.8</global.jdk.version>
 
@@ -77,6 +77,11 @@
             <groupId>com.squareup.okhttp</groupId>
             <artifactId>okhttp</artifactId>
             <version>${okhttp.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.gnome</groupId>
+            <artifactId>gtk</artifactId>
+            <version>1.0.0</version>
         </dependency>
     </dependencies>
 

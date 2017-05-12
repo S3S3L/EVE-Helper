@@ -21,6 +21,8 @@ import java.awt.datatransfer.Transferable;
 import java.io.IOException;
 import java.text.DecimalFormat;
 import java.util.List;
+import java.util.Queue;
+import java.util.concurrent.LinkedBlockingQueue;
 
 import org.gnome.gtk.Gtk;
 import org.gnome.notify.Notification;
@@ -48,42 +50,73 @@ public class Application {
     private static final String api = "https://www.ceve-market.org/query/?search=";
     private static final JacksonHelper json = JacksonUtil.create();
     private static final DecimalFormat df = new DecimalFormat("#,###.00");
-    private static String lastKeyWord;
+    private static final Platform platform = Platform.parse(System.getProperty("os.name"));
+    private static final Clipboard sysClip = Toolkit.getDefaultToolkit().getSystemClipboard();
+    private static final Queue<Notification> notificationQueue = new LinkedBlockingQueue<>();
+    private static final LinkedBlockingQueue<String> searchQueue = new LinkedBlockingQueue<>();
     private static TrayIcon trayIcon;
+    private static Notification currentNotification;
+    private static String lastKeyWord;
 
-    public static void main(String[] args) throws InterruptedException {
-        Platform platform = Platform.parse(System.getProperty("os.name"));
-
-        Clipboard sysClip = Toolkit.getDefaultToolkit().getSystemClipboard();
-        while (true) {
-            Transferable clipTf = sysClip.getContents(null);
-            if (clipTf != null) {
-                if (clipTf.isDataFlavorSupported(DataFlavor.stringFlavor)) {
-                    try {
-                        String keyWord = (String) clipTf.getTransferData(DataFlavor.stringFlavor);
-                        if (lastKeyWord != null && lastKeyWord.equals(keyWord)) {
-                            continue;
+    public static void main(String[] args) throws InterruptedException, IOException, AWTException {
+        new Thread(() -> {
+            while (true) {
+                Transferable clipTf = sysClip.getContents(null);
+                if (clipTf != null) {
+                    if (clipTf.isDataFlavorSupported(DataFlavor.stringFlavor)) {
+                        try {
+                            String keyWord = (String) clipTf.getTransferData(DataFlavor.stringFlavor);
+                            if (keyWord.equals(lastKeyWord)) {
+                                continue;
+                            }
+                            lastKeyWord = keyWord;
+                            System.out.println(keyWord);
+                            searchQueue.offer(keyWord);
+                        } catch (Exception e) {
+                            e.printStackTrace();
                         }
-                        lastKeyWord = keyWord;
-                        System.out.println(keyWord);
-                        String url = api.concat(keyWord);
-                        System.out.println(url);
-                        List<Item> items = json.convert(doGet(url), new TypeReference<List<Item>>() {
-                        });
-                        System.out.println(json.prettyPrinter().toJsonString(items));
-                        for (Item item : items) {
-                            showNotify(platform, item);
-                        }
-                    } catch (Exception e) {
-                        e.printStackTrace();
                     }
                 }
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
             }
-            Thread.sleep(1000);
+        }).start();
+
+        new Thread(() -> {
+            while (true) {
+                showNotify();
+                try {
+                    Thread.sleep(5000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
+
+        while (true) {
+            doSearch(searchQueue.take());
         }
     }
 
-    private static void showNotify(Platform platform, Item item) throws AWTException {
+    private static void doSearch(String keyWord) throws IOException, AWTException {
+        notificationQueue.clear();
+        String url = api.concat(keyWord);
+        System.out.println(url);
+        List<Item> items = json.convert(doGet(url), new TypeReference<List<Item>>() {
+        });
+        System.out.println(json.prettyPrinter().toJsonString(items));
+        if (currentNotification != null) {
+            currentNotification.close();
+        }
+        for (Item item : items) {
+            buildNotify(platform, item);
+        }
+    }
+
+    private static void buildNotify(Platform platform, Item item) throws AWTException {
         switch (platform) {
             case Windows:
                 if (trayIcon == null) {
@@ -114,12 +147,26 @@ public class Application {
                                 df.format(item.getBuy()), item.getTime() == null ? "" : item.getTime(),
                                 item.getDescription()),
                         null);
-                myNotification.setTimeout(1);
-                myNotification.show();
+                // myNotification.connect(new Closed() {
+                // @Override
+                // public void onClosed(Notification paramNotification) {
+                // System.out.println("Notification closed");
+                // showNotify();
+                // }
+                // });
+                notificationQueue.offer(myNotification);
                 break;
             default:
                 System.err.println("Operation System not support.");
                 break;
+        }
+    }
+
+    private static void showNotify() {
+        Notification notification = notificationQueue.poll();
+        if (notification != null) {
+            currentNotification = notification;
+            notification.show();
         }
     }
 
