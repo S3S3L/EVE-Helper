@@ -1,0 +1,10 @@
+.my-rect {
+	-fx-fill: #00ffff;
+    -fx-width: 100px;
+    -fx-height: 100px;
+}
+
+body {
+    overflow-x: hidden;
+    overflow-y: hidden;
+}

@@ -1,0 +1,98 @@
+<meta charset="UTF-8">
+<style>
+    body {
+        margin: 0;
+    }
+
+    .container {
+        font-family: Microsoft Yahei, "Helvetica Neue", Helvetica,
+        Hiragino Sans GB, WenQuanYi Micro Hei, sans-serif;
+        height: 100%;
+        background: #16202D;
+        overflow: hidden;
+    }
+
+    .inner {
+        padding: 8px 12px;
+        width: 100%;
+    }
+
+    h1 {
+        margin-top: 0;
+        font-weight: bold;
+    }
+
+    .title {
+        color: #69C2F3;
+        font-size: 24px;
+    }
+
+    .warnning {
+        color: #69C2F3;
+        font-weight: normal
+    }
+
+    .content {
+        color: #ccc;
+        font-size: 15px;
+    }
+
+    .message {
+        background: #0b161f;
+        color: #aaa;
+        padding: 8px 12px;
+    }
+
+    a, a:focus, a:active, a:visited {
+        color: #aaa;
+    }
+
+    .footer {
+        font-size: 12px;
+        color: #bbb;
+    }
+
+    ::selection {
+        background: rgba(223, 144, 12, 0.40);
+    }
+
+    ::-moz-selection {
+        background: rgba(223, 144, 12, 0.40);
+    }
+</style>
+
+
+<script type="application/javascript">
+    function showDetail(items) {
+        var itemList = document.getElementById("item-list");
+        items.forEach(r - > {
+        });
+    }
+</script>
+
+<div class="container">
+    <div class="inner">
+        <h1 class="title">您好 {username},</h1>
+        <p class="content">
+            您的HelloBike统一登录中心账号在 <b class="warnning">{date}</b> 提交了修改密码的请求。<br>
+            <b class="warnning">如果不是您本人的操作请忽略这封邮件。</b>
+        </p>
+
+        <p class="content">
+            点击下面的链接来修改您的密码,该链接将于 <b class="warnning">{deadline}</b> 过期。
+        </p>
+
+        <p>
+            <a href="{url}" target="_blank" class="warnning">点此修改密码</a>
+        </p>
+
+        <div class="message">
+            <p>这封邮件是来自HelloBike技术团队的系统邮件，请勿回复，谢谢。</p>
+        </div>
+        <p class="footer">
+            <a href="http://www.hellobike.com" target="_blank">http://www.hellobike.com</a>
+            <br/>
+            <small>HelloBike &copy; 2017</small>
+        </p>
+    </div>
+</div>
