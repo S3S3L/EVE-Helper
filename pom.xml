@@ -78,10 +78,12 @@
             <artifactId>okhttp</artifactId>
             <version>${okhttp.version}</version>
         </dependency>
+        <!-- <dependency> <groupId>org.gnome</groupId> <artifactId>gtk</artifactId> 
+            <version>1.0.0</version> </dependency> -->
         <dependency>
-            <groupId>org.gnome</groupId>
-            <artifactId>gtk</artifactId>
-            <version>1.0.0</version>
+            <groupId>com.github.plushaze.traynotification</groupId>
+            <artifactId>TrayNotification</artifactId>
+            <version>0.3</version>
         </dependency>
     </dependencies>
 

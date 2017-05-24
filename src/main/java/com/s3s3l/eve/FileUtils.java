@@ -3,6 +3,7 @@ package com.s3s3l.eve;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.net.URL;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -135,7 +136,8 @@ public class FileUtils {
      * @since JDK 1.8
      */
     public static Path mapLocalFullPath(String path) {
-        String pathStr = FileUtils.class.getResource("/").getPath().concat(path);
+        URL url = FileUtils.class.getResource("/");
+        String pathStr = url.getPath().concat(path);
         String OS = System.getProperty("os.name").toLowerCase();
         if ((OS.indexOf("win") >= 0)) {
             pathStr = pathStr.substring(1);
@@ -144,7 +146,7 @@ public class FileUtils {
 
         return localPath;
     }
-
+    
     /**
      * 
      * 获取资源文件的绝对路径

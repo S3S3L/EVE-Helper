@@ -1,0 +1,13 @@
+.label {
+    -fx-background-color: #00ffff;
+    -fx-min-width: 100px;
+    -fx-min-height: 30px;
+    -fx-max-width: 100px;
+    -fx-max-height: 30px
+}
+
+body {
+    -fx-fill: #ff00ff;
+    -fx-fill-height: 100px;
+    -fx-fill-width: 100px;
+}
