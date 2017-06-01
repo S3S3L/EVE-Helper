@@ -1,13 +1,42 @@
-.label {
-    -fx-background-color: #00ffff;
-    -fx-min-width: 100px;
-    -fx-min-height: 30px;
-    -fx-max-width: 100px;
-    -fx-max-height: 30px
+.body {
+    -fx-background-color: black;
+    -fx-min-width: 340.0px;
+    -fx-min-height: 200.0px;
+    -fx-max-width: 340.0px;
+    -fx-max-height: 200.0px;
 }
 
-body {
-    -fx-fill: #ff00ff;
-    -fx-fill-height: 100px;
-    -fx-fill-width: 100px;
+.tag {
+    -fx-background-color: transparent;
+    -fx-text-fill: white;
+    -fx-alignment: bottom-center;
+    -fx-min-width: 40.0px;
+    -fx-min-height: 30.0px;
+    -fx-max-width: 40.0px;
+    -fx-max-height: 30.0px;
+}
+
+.h-group {
+    -fx-padding: 0.0 0.0 0.0 10.0px;
+}
+
+.btn {
+    -fx-background-color: transparent;
+    -fx-text-fill: white;
+    -fx-alignment: center;
+    -fx-border-width: 0.5px;
+    -fx-border-color: rgba(156.0,153.0,153.0,0.7);
+    -fx-min-width: 40.0px;
+    -fx-min-height: 30.0px;
+    -fx-max-width: 40.0px;
+    -fx-max-height: 30.0px;
+}
+
+.btn:hover {
+    -fx-background-color: rgba(156.0,153.0,153.0,0.5);
+}
+
+.btn:active {
+    -fx-background-color: rgba(156.0,153.0,153.0,0.5);
+    -fx-effect: innershadow(three-pass-box, rgba(0,0,0,0.8), 10, 0, 0, 0) ;
 }

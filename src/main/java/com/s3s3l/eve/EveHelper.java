@@ -12,6 +12,7 @@ package com.s3s3l.eve;
 import java.awt.AWTException;
 import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.text.DecimalFormat;
 import java.util.List;
@@ -27,9 +28,10 @@ import com.squareup.okhttp.Response;
 
 import javafx.application.Application;
 import javafx.event.EventHandler;
+import javafx.fxml.FXMLLoader;
 import javafx.scene.Group;
+import javafx.scene.Node;
 import javafx.scene.Scene;
-import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
@@ -56,14 +58,10 @@ public class EveHelper extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-        Scene scene = new Scene(new Group());
+        Scene scene = new Scene(new Group(
+                (Node) new FXMLLoader().load(new FileInputStream(FileUtils.getFirstExistFile("MarketSearch.fxml")))));
         scene.getStylesheets().add(FileUtils.getFirstExistFile("css/style.css").toURI().toURL().toExternalForm());
-        // WebView webview = new WebView();
-        // WebEngine engine = webview.getEngine();
-        // engine.load(FileUtils.getFirstExistFile("index.html").toURI().toURL().toExternalForm());
-        // ((Group) scene.getRoot()).getChildren().add(webview);
-        Label label = new Label();
-        label.getStyleClass().add("label");
+        ((Group) scene.getRoot()).getStyleClass().add("scene");
         scene.addEventHandler(MouseEvent.MOUSE_PRESSED, new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
@@ -78,12 +76,11 @@ public class EveHelper extends Application {
                 primaryStage.setY(event.getScreenY() + yOffset);
             }
         });
-        ((Group) scene.getRoot()).getStyleClass().add("body");
-        ((Group) scene.getRoot()).getChildren().add(label);
         primaryStage.initStyle(StageStyle.TRANSPARENT);
         primaryStage.setAlwaysOnTop(true);
         primaryStage.setScene(scene);
-        primaryStage.setOpacity(1.0);
+        primaryStage.setOpacity(0.7);
+        primaryStage.setResizable(false);
         primaryStage.show();
     }
 

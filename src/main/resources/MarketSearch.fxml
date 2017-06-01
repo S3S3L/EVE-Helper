@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.control.Label?>
+<?import com.sun.javafx.scene.control.skin.InputField?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.ComboBox?>
+<?import com.s3s3l.eve.component.Selector?>
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+
+<HBox xmlns:fx="http://javafx.com/fxml/1" styleClass="body">
+    <HBox styleClass="h-group">
+        <Label styleClass="tag">星域：</Label>
+        <Selector fx:id="systemSelector" promptText="星 域"
+            value="value" name="name">
+        </Selector>
+    </HBox>
+    <HBox styleClass="h-group">
+        <Label styleClass="tag">物品：</Label>
+        <Selector fx:id="systemSelector2" promptText="lalala"
+            value="value" name="name">
+        </Selector>
+    </HBox>
+    <HBox styleClass="h-group">
+        <Label styleClass="btn">搜索</Label>
+    </HBox>
+</HBox>
+
