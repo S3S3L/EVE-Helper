@@ -20,23 +20,7 @@
     -fx-padding: 0.0 0.0 0.0 10.0px;
 }
 
-.btn {
-    -fx-background-color: transparent;
-    -fx-text-fill: white;
+.btn-group {
     -fx-alignment: center;
-    -fx-border-width: 0.5px;
-    -fx-border-color: rgba(156.0,153.0,153.0,0.7);
-    -fx-min-width: 40.0px;
-    -fx-min-height: 30.0px;
-    -fx-max-width: 40.0px;
-    -fx-max-height: 30.0px;
-}
-
-.btn:hover {
-    -fx-background-color: rgba(156.0,153.0,153.0,0.5);
-}
-
-.btn:active {
-    -fx-background-color: rgba(156.0,153.0,153.0,0.5);
-    -fx-effect: innershadow(three-pass-box, rgba(0,0,0,0.8), 10, 0, 0, 0) ;
+    -fx-padding: 10.0px 0.0 0.0 10.0px;
 }

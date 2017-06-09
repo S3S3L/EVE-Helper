@@ -10,13 +10,13 @@
 package com.s3s3l.eve;
 
 import java.awt.AWTException;
-import java.awt.Toolkit;
-import java.awt.datatransfer.Clipboard;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.text.DecimalFormat;
 import java.util.List;
 import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import com.fasterxml.jackson.core.TreeNode;
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -35,6 +35,9 @@ import javafx.scene.Scene;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import net.sourceforge.tess4j.ITesseract;
+import net.sourceforge.tess4j.Tesseract;
+import net.sourceforge.tess4j.TesseractException;
 
 /**
  * <p>
@@ -50,11 +53,13 @@ public class EveHelper extends Application {
     private static final String api = "https://www.ceve-market.org/query/?search=";
     private static final JacksonHelper json = JacksonUtil.create();
     private static final DecimalFormat df = new DecimalFormat("#,###.00");
-    private static final Clipboard sysClip = Toolkit.getDefaultToolkit().getSystemClipboard();
     private static final LinkedBlockingQueue<String> searchQueue = new LinkedBlockingQueue<>();
     private static String lastKeyWord;
     private static double xOffset = 0;
     private static double yOffset = 0;
+
+    private static final AtomicBoolean control = new AtomicBoolean(false);
+    private static final AtomicBoolean alt = new AtomicBoolean(false);
 
     @Override
     public void start(Stage primaryStage) throws Exception {
@@ -62,6 +67,19 @@ public class EveHelper extends Application {
                 (Node) new FXMLLoader().load(new FileInputStream(FileUtils.getFirstExistFile("MarketSearch.fxml")))));
         scene.getStylesheets().add(FileUtils.getFirstExistFile("css/style.css").toURI().toURL().toExternalForm());
         ((Group) scene.getRoot()).getStyleClass().add("scene");
+
+        scene.setOnKeyPressed((event) -> {
+            switch (event.getCode()) {
+                case ALT:
+                    alt.set(true);
+                    break;
+                case CONTROL:
+                    control.set(true);
+                    break;
+                default:
+                    break;
+            }
+        });
         scene.addEventHandler(MouseEvent.MOUSE_PRESSED, new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
@@ -85,7 +103,19 @@ public class EveHelper extends Application {
     }
 
     public static void main(String[] args) throws InterruptedException, IOException, AWTException {
-        launch(args);
+        String path = "/home/zwei/Downloads/tess/tess4j.jpeg";
+        File imageFile = new File(path);
+        ITesseract instance = new Tesseract(); // JNA Interface Mapping
+        // ITesseract instance = new Tesseract1(); // JNA Direct Mapping
+        instance.setDatapath("/home/zwei/Downloads/tess/");
+        instance.setLanguage("eng");
+
+        try {
+            String result = instance.doOCR(imageFile);
+            System.out.println(result);
+        } catch (TesseractException e) {
+            System.err.println(e.getMessage());
+        }
         // System.out.println(FileUtils.class.getResource("/"));
         // new Thread(() -> {
         // while (true) {

@@ -5,27 +5,33 @@
 <?import com.sun.javafx.scene.control.skin.InputField?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.control.ComboBox?>
-<?import com.s3s3l.eve.component.Selector?>
+<?import com.s3s3l.eve.component.FlatSelector?>
 <?import javafx.scene.control.MenuBar?>
 <?import javafx.scene.control.Menu?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
+<?import com.s3s3l.eve.component.FlatButton?>
+<?import javafx.scene.layout.GridPane?>
 
-<HBox xmlns:fx="http://javafx.com/fxml/1" styleClass="body">
-    <HBox styleClass="h-group">
+
+
+<GridPane xmlns:fx="http://javafx.com/fxml/1" styleClass="body">
+    <HBox styleClass="h-group" GridPane.columnIndex="0" GridPane.rowIndex="0">
         <Label styleClass="tag">星域：</Label>
-        <Selector fx:id="systemSelector" promptText="星 域"
+        <FlatSelector fx:id="systemSelector" promptText="星 域"
             value="value" name="name">
-        </Selector>
+        </FlatSelector>
     </HBox>
-    <HBox styleClass="h-group">
+    <HBox styleClass="h-group"  GridPane.columnIndex="2" GridPane.rowIndex="0">
         <Label styleClass="tag">物品：</Label>
-        <Selector fx:id="systemSelector2" promptText="lalala"
+        <FlatSelector fx:id="systemSelector2" promptText="lalala"
             value="value" name="name">
-        </Selector>
+        </FlatSelector>
     </HBox>
-    <HBox styleClass="h-group">
-        <Label styleClass="btn">搜索</Label>
+    <HBox styleClass="h-group,btn-group"  GridPane.columnIndex="4" GridPane.rowIndex="0">
+        <FlatButton text="搜索"></FlatButton>
     </HBox>
-</HBox>
+    <HBox styleClass="h-group"  GridPane.columnIndex="0" GridPane.rowIndex="1" GridPane.columnSpan="5">
+    </HBox>
+</GridPane>
 

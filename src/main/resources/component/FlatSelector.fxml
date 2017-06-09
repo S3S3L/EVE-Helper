@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.ScrollBar?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.control.ListView?>
+
+<fx:root type="javafx.scene.layout.VBox" xmlns:fx="http://javafx.com/fxml">
+    <TextField fx:id="textField" styleClass="input, text" />
+    <VBox fx:id="dropList" styleClass="drop-list">
+    </VBox>
+</fx:root>

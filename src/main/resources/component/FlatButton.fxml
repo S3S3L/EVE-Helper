@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.HBox?>
+
+<fx:root type="com.s3s3l.eve.component.FlatButton" xmlns:fx="http://javafx.com/fxml/1">
+    <Label fx:id="label" styleClass="flat-btn"></Label>
+</fx:root>
+

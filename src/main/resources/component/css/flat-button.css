@@ -1,0 +1,23 @@
+.flat-btn {
+    -fx-alignment: center;
+    -fx-fill-width: true;
+    -fx-fill-height: true;
+    -fx-padding: 5px;
+    -fx-text-fill: white;
+    -fx-text-alignment: center;
+}
+
+.flat-btn:hover {
+    -fx-background-color: rgba(156.0,153.0,153.0,0.5);
+}
+
+.flat-btn:active {
+    -fx-background-color: rgba(156.0,153.0,153.0,0.5);
+    -fx-effect: innershadow(three-pass-box, rgba(0,0,0,0.8), 10, 0, 0, 0) ;
+}
+
+.flat-btn-content {
+    -fx-background-color: transparent;
+    -fx-border-width: 0.5px;
+    -fx-border-color: rgba(156.0,153.0,153.0,0.7);
+}
