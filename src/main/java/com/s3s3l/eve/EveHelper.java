@@ -10,12 +10,14 @@
 package com.s3s3l.eve;
 
 import java.awt.AWTException;
-import java.io.File;
+import java.awt.Dimension;
+import java.awt.Robot;
+import java.awt.Toolkit;
+import java.awt.image.BufferedImage;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.text.DecimalFormat;
 import java.util.List;
-import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import com.fasterxml.jackson.core.TreeNode;
@@ -27,12 +29,18 @@ import com.squareup.okhttp.Request;
 import com.squareup.okhttp.Response;
 
 import javafx.application.Application;
+import javafx.embed.swing.SwingFXUtils;
 import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.paint.Color;
+import javafx.scene.paint.ImagePattern;
+import javafx.scene.shape.Rectangle;
+import javafx.stage.Modality;
+import javafx.stage.Screen;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import net.sourceforge.tess4j.ITesseract;
@@ -53,13 +61,13 @@ public class EveHelper extends Application {
     private static final String api = "https://www.ceve-market.org/query/?search=";
     private static final JacksonHelper json = JacksonUtil.create();
     private static final DecimalFormat df = new DecimalFormat("#,###.00");
-    private static final LinkedBlockingQueue<String> searchQueue = new LinkedBlockingQueue<>();
-    private static String lastKeyWord;
     private static double xOffset = 0;
     private static double yOffset = 0;
+    private static double pinX = 0, pinY = 0;
 
     private static final AtomicBoolean control = new AtomicBoolean(false);
     private static final AtomicBoolean alt = new AtomicBoolean(false);
+    private static final ITesseract tesseract = new Tesseract();
 
     @Override
     public void start(Stage primaryStage) throws Exception {
@@ -94,70 +102,91 @@ public class EveHelper extends Application {
                 primaryStage.setY(event.getScreenY() + yOffset);
             }
         });
+
         primaryStage.initStyle(StageStyle.TRANSPARENT);
         primaryStage.setAlwaysOnTop(true);
         primaryStage.setScene(scene);
         primaryStage.setOpacity(0.7);
         primaryStage.setResizable(false);
         primaryStage.show();
+
+        Rectangle rect = new Rectangle(0, 0, 0, 0);
+        rect.setFill(Color.WHITE);
+        rect.setOpacity(0.8);
+
+        Stage mask = new Stage(StageStyle.TRANSPARENT);
+        mask.setResizable(false);
+        // mask.setOpacity(0.3);
+        mask.initModality(Modality.APPLICATION_MODAL);
+        mask.setAlwaysOnTop(true);
+        mask.initOwner(primaryStage);
+
+        Dimension monitor = Toolkit.getDefaultToolkit().getScreenSize();
+
+        Double screenWidth = Screen.getPrimary().getVisualBounds().getMaxX();
+        Double screenHeight = Screen.getPrimary().getVisualBounds().getMaxY();
+
+        System.out.println(screenWidth);
+        System.out.println(screenHeight);
+        System.out.println(monitor.getWidth());
+        System.out.println(monitor.getHeight());
+        
+        
+
+        Rectangle background = new Rectangle(screenWidth, screenHeight);
+        BufferedImage screenShot = new Robot().createScreenCapture(new java.awt.Rectangle(monitor)).getSubimage(0, 0,
+                screenWidth.intValue(), screenHeight.intValue());
+        background.setFill(new ImagePattern(SwingFXUtils.toFXImage(screenShot, null)));
+
+        Group root = new Group(background);
+        root.getChildren().add(rect);
+
+        Scene maskScene = new Scene(root, screenWidth, screenHeight);
+        System.out.println(maskScene.getWidth());
+        System.out.println(maskScene.getHeight());
+        maskScene.addEventFilter(MouseEvent.MOUSE_PRESSED, (event) -> {
+            pinX = event.getSceneX();
+            pinY = event.getSceneY();
+            rect.setWidth(0);
+            rect.setHeight(0);
+        });
+        maskScene.addEventFilter(MouseEvent.MOUSE_DRAGGED, (event) -> {
+            rect.setLayoutX(Math.min(event.getSceneX(), pinX));
+            rect.setLayoutY(Math.min(event.getSceneY(), pinY));
+            rect.setWidth(Math.abs(event.getSceneX() - pinX));
+            rect.setHeight(Math.abs(event.getSceneY() - pinY));
+        });
+        maskScene.addEventFilter(MouseEvent.MOUSE_RELEASED, (event) -> {
+//            System.out.println(doOCR(cutImage(screenShot, rect)));
+            
+        });
+        mask.setScene(maskScene);
+        mask.show();
     }
 
     public static void main(String[] args) throws InterruptedException, IOException, AWTException {
-        String path = "/home/zwei/Downloads/tess/tess4j.jpeg";
-        File imageFile = new File(path);
-        ITesseract instance = new Tesseract(); // JNA Interface Mapping
-        // ITesseract instance = new Tesseract1(); // JNA Direct Mapping
-        instance.setDatapath("/home/zwei/Downloads/tess/");
-        instance.setLanguage("eng");
+        tesseract.setDatapath(FileUtils.getFullFilePath("classpath:/"));
+        tesseract.setLanguage("eng");
+        launch(args);
+    }
 
+    private static BufferedImage cutImage(BufferedImage img, Rectangle rect) {
+        System.out.println(rect.getLayoutX());
+        System.out.println(rect.getLayoutY());
+        System.out.println(rect.getWidth());
+        System.out.println(rect.getHeight());
+        BufferedImage cutedImg = img.getSubimage(new Double(Math.min(0, rect.getLayoutX())).intValue(),
+                new Double(Math.min(0, rect.getLayoutY())).intValue(), new Double(rect.getWidth()).intValue(),
+                new Double(rect.getHeight()).intValue());
+        return cutedImg;
+    }
+
+    private static String doOCR(BufferedImage img) {
         try {
-            String result = instance.doOCR(imageFile);
-            System.out.println(result);
+            return tesseract.doOCR(img);
         } catch (TesseractException e) {
-            System.err.println(e.getMessage());
+            return "";
         }
-        // System.out.println(FileUtils.class.getResource("/"));
-        // new Thread(() -> {
-        // while (true) {
-        // Transferable clipTf = sysClip.getContents(null);
-        // if (clipTf != null) {
-        // if (clipTf.isDataFlavorSupported(DataFlavor.stringFlavor)) {
-        // try {
-        // String keyWord = (String)
-        // clipTf.getTransferData(DataFlavor.stringFlavor);
-        // if (keyWord.equals(lastKeyWord)) {
-        // continue;
-        // }
-        // lastKeyWord = keyWord;
-        // System.out.println(keyWord);
-        // searchQueue.offer(keyWord);
-        // } catch (Exception e) {
-        // e.printStackTrace();
-        // }
-        // }
-        // }
-        // try {
-        // Thread.sleep(1000);
-        // } catch (InterruptedException e) {
-        // e.printStackTrace();
-        // }
-        // }
-        // }).start();
-        //
-        // new Thread(() -> {
-        // while (true) {
-        // showNotify();
-        // try {
-        // Thread.sleep(5000);
-        // } catch (InterruptedException e) {
-        // e.printStackTrace();
-        // }
-        // }
-        // }).start();
-        //
-        // while (true) {
-        // doSearch(searchQueue.take());
-        // }
     }
 
     private static void doSearch(String keyWord) throws IOException, AWTException {
