@@ -63,7 +63,7 @@
         <plugin.compiler.version>3.5.1</plugin.compiler.version>
 
         <okhttp.version>2.5.0</okhttp.version>
-        <s3s3l.version>1.1.0-SNAPSHOT</s3s3l.version>
+        <s3s3l.version>1.2.0-SNAPSHOT</s3s3l.version>
     </properties>
 
     <dependencies>

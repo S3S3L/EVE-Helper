@@ -14,11 +14,16 @@ import java.awt.Dimension;
 import java.awt.Robot;
 import java.awt.Toolkit;
 import java.awt.image.BufferedImage;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.text.DecimalFormat;
 import java.util.List;
+import java.util.Locale;
 import java.util.concurrent.atomic.AtomicBoolean;
+
+import org.simmetrics.StringMetric;
+import org.simmetrics.builders.StringMetricBuilder;
+import org.simmetrics.metrics.StringMetrics;
+import org.simmetrics.simplifiers.Simplifiers;
 
 import com.fasterxml.jackson.core.TreeNode;
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -31,9 +36,7 @@ import com.squareup.okhttp.Response;
 import javafx.application.Application;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.event.EventHandler;
-import javafx.fxml.FXMLLoader;
 import javafx.scene.Group;
-import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
@@ -71,10 +74,13 @@ public class EveHelper extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-        Scene scene = new Scene(new Group(
-                (Node) new FXMLLoader().load(new FileInputStream(FileUtils.getFirstExistFile("MarketSearch.fxml")))));
-        scene.getStylesheets().add(FileUtils.getFirstExistFile("css/style.css").toURI().toURL().toExternalForm());
-        ((Group) scene.getRoot()).getStyleClass().add("scene");
+        // Scene scene = new Scene(new Group(
+        // (Node) new FXMLLoader().load(new
+        // FileInputStream(FileUtils.getFirstExistFile("MarketSearch.fxml")))));
+        // scene.getStylesheets().add(FileUtils.getFirstExistFile("css/style.css").toURI().toURL().toExternalForm());
+        // ((Group) scene.getRoot()).getStyleClass().add("scene");
+        Rectangle cutedImg = new Rectangle(0, 0, 100, 100);
+        Scene scene = new Scene(new Group(cutedImg));
 
         scene.setOnKeyPressed((event) -> {
             switch (event.getCode()) {
@@ -106,8 +112,8 @@ public class EveHelper extends Application {
         primaryStage.initStyle(StageStyle.TRANSPARENT);
         primaryStage.setAlwaysOnTop(true);
         primaryStage.setScene(scene);
-        primaryStage.setOpacity(0.7);
-        primaryStage.setResizable(false);
+        // primaryStage.setOpacity(0.7);
+        primaryStage.setResizable(true);
         primaryStage.show();
 
         Rectangle rect = new Rectangle(0, 0, 0, 0);
@@ -130,8 +136,6 @@ public class EveHelper extends Application {
         System.out.println(screenHeight);
         System.out.println(monitor.getWidth());
         System.out.println(monitor.getHeight());
-        
-        
 
         Rectangle background = new Rectangle(screenWidth, screenHeight);
         BufferedImage screenShot = new Robot().createScreenCapture(new java.awt.Rectangle(monitor)).getSubimage(0, 0,
@@ -157,8 +161,14 @@ public class EveHelper extends Application {
             rect.setHeight(Math.abs(event.getSceneY() - pinY));
         });
         maskScene.addEventFilter(MouseEvent.MOUSE_RELEASED, (event) -> {
-//            System.out.println(doOCR(cutImage(screenShot, rect)));
-            
+            System.out.println(doOCR(cutImage(screenShot, rect)));
+            BufferedImage img = cutImage(screenShot, rect);
+            cutedImg.setWidth(img.getWidth());
+            cutedImg.setHeight(img.getHeight());
+            primaryStage.setWidth(img.getWidth());
+            primaryStage.setHeight(img.getHeight());
+            cutedImg.setFill(new ImagePattern(SwingFXUtils.toFXImage(img, null)));
+
         });
         mask.setScene(maskScene);
         mask.show();
@@ -167,6 +177,9 @@ public class EveHelper extends Application {
     public static void main(String[] args) throws InterruptedException, IOException, AWTException {
         tesseract.setDatapath(FileUtils.getFullFilePath("classpath:/"));
         tesseract.setLanguage("eng");
+
+        StringMetric stringMetric = StringMetricBuilder.with(StringMetrics.cosineSimilarity()).simplify(Simplifiers.toLowerCase(Locale.ENGLISH))
+                .simplify(Simplifiers.replaceNonWord()).build();
         launch(args);
     }
 
@@ -175,8 +188,8 @@ public class EveHelper extends Application {
         System.out.println(rect.getLayoutY());
         System.out.println(rect.getWidth());
         System.out.println(rect.getHeight());
-        BufferedImage cutedImg = img.getSubimage(new Double(Math.min(0, rect.getLayoutX())).intValue(),
-                new Double(Math.min(0, rect.getLayoutY())).intValue(), new Double(rect.getWidth()).intValue(),
+        BufferedImage cutedImg = img.getSubimage(new Double(Math.max(0, rect.getLayoutX())).intValue(),
+                new Double(Math.max(0, rect.getLayoutY())).intValue(), new Double(rect.getWidth()).intValue(),
                 new Double(rect.getHeight()).intValue());
         return cutedImg;
     }
