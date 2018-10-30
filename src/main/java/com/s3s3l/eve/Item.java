@@ -3,7 +3,7 @@
  * File Name:Item.java 
  * Package Name:com.s3s3l.eve 
  * Date:May 11, 20176:37:44 PM 
- * Copyright (c) 2017, kehewei@hellobike.com All Rights Reserved. 
+ * Copyright (c) 2017, kehw.zwei@gmail.com All Rights Reserved. 
  * 
 */
 

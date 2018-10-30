@@ -3,7 +3,7 @@
  * File Name:Selector.java 
  * Package Name:com.s3s3l.eve.component 
  * Date:May 31, 20172:22:43 PM 
- * Copyright (c) 2017, kehewei@hellobike.com All Rights Reserved. 
+ * Copyright (c) 2017, kehw.zwei@gmail.com All Rights Reserved. 
  * 
 */
 
